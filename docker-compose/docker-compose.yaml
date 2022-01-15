@@ -1,0 +1,44 @@
+# docker-compose for Wordpress Blog 
+# defining docker-compose version
+version: "3.0"
+
+#configuring services
+services:
+  db:
+    # for db using mysql image
+    image: mysql:8.0.27
+    # using name volumes to persist data
+    volumes:
+      - data_mysql:/var/lib/mysql
+    #using always rsetart policy
+    restart: always
+    # specifying environment variables
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=wordpress
+      - MYSQL_USER=priyanshu
+      - MYSQL_PASSWORD=wordpressmysql
+    #exposing port 3306 and 33060
+    expose:
+      - 3306
+      - 33060
+  # image wordpress
+  wordpress:
+    image: wordpress:latest
+  #attaching named volume to wordpress for data persistence
+    volumes:
+      - data_wordpress:/var/www/html
+  # connecting port 80 of container to port 80 of host
+    ports:
+      - 80:80
+  # always restart policy
+    restart: always
+    environment:
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_USER=priyanshu
+      - WORDPRESS_DB_PASSWORD=wordpressmysql
+      - WORDPRESS_DB_NAME=wordpress
+# specifying  the volumes
+volumes:
+  data_mysql:
+  data_wordpress:
